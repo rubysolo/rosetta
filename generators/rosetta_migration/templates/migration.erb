@@ -1,0 +1,29 @@
+class CreateRosettaTranslationTables < ActiveRecord::Migration
+  def self.up
+    create_table :i18n_locales, :force => true do |t|
+      t.string :name, :code, :iso
+      t.boolean :main, :default => false
+      t.timestamps
+    end
+    add_index :i18n_locales, :code
+
+    create_table :i18n_translated_strings, :force => true do |t|
+      t.string :namespace, :key
+      t.timestamps
+    end
+    add_index :i18n_translated_strings, [:namespace, :key]
+
+    create_table :i18n_translations, :force => true do |t|
+      t.references :i18n_locale, :i18n_translated_string
+      t.text :text
+      t.timestamps
+    end
+    add_index :i18n_translations, [:i18n_locale_id, :i18n_translated_string_id]
+  end
+
+  def self.down
+    drop_table :i18n_translations
+    drop_table :i18n_translated_strings
+    drop_table :i18n_locales
+  end
+end

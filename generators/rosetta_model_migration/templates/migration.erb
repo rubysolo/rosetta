@@ -1,0 +1,47 @@
+<%-
+  migrate_data_column_list    = migrate_data_for_columns.values.flatten
+  migrate_data_column_symbols = migrate_data_column_list.map{|c| ":#{c}" }.join(', ')
+  migrate_data_column_strings = migrate_data_column_list.map{|c| "#{c}"  }.join(', ')
+-%>
+class <%= migration_class_name %> < ActiveRecord::Migration
+  def self.up
+    create_table :<%= translated_model.translations_table %>, :force => true do |t|
+      t.references :i18n_locale, :<%= singular_name %>
+      <%- translated_model.translated_attributes.each do |type, attribute_names| -%>
+      t.<%= type %> <%= attribute_names.map{|a| ":#{a}" }.join(', ') %>
+      <%- end -%>
+    end
+
+    add_index :<%= translated_model.translations_table %>, :i18n_locale_id
+    add_index :<%= translated_model.translations_table %>, :<%= singular_name %>_id
+    <%- unless migrate_data_for_columns.empty? -%>
+
+    @locale = Locale.main
+    execute("INSERT INTO <%= translated_model.translations_table %> (i18n_locale_id, <%= migrate_data_column_strings %>) SELECT #{@locale.id}, <%= migrate_data_column_strings %> FROM <%= plural_name %>")
+
+    change_table :<%= plural_name %> do |t|
+      t.remove <%= migrate_data_column_symbols %>
+    end
+    <%- end -%>
+  end
+
+  def self.down
+    <%- unless migrate_data_for_columns.empty? -%>
+    class <%= translated_model.translations_class %> < ActiveRecord::Base
+    end
+
+    change_table :<%= plural_name %> do |t|
+    <%- migrate_data_for_columns.each do |type, columns| -%>
+      t.<%= type %> <%= columns.map{|a| ":#{a}" }.join(', ') %>
+    <%- end -%>
+    end
+
+    <%- # TODO : cross-database multiple table update? -%>
+    <%= translated_model.translations_class %>.find(:all).each do |translation|
+      execute("UPDATE <%= plural_name %> SET <%= migrate_data_column_list.map{|c| "#{c} = '\#{translation.#{c}}'" }.join(', ') %> WHERE id = #{translation.<%= singular_name %>_id}")
+    end
+
+    <%- end -%>
+    drop_table :<%= translated_model.translations_table %>
+  end
+end
