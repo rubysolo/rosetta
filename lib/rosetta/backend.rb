@@ -18,12 +18,9 @@ module I18n
 
             next if tr.text.blank?
 
-            data = { tr.key.to_sym => tr.text }
-
-            ns = tr.translated_string.namespace
-            data = ns.split(/\./).reject{|segment| segment.blank? }.reverse.inject(data) do |hash, element|
-              { element.to_sym => hash }
-            end unless ns.blank?
+            data = tr.key.split(/\./).reject{|segment| segment.blank? }.reverse.inject(tr.text) do |hash, segment|
+              { segment.to_sym => hash }
+            end
 
             merge_translations(locale_code, data)
           end

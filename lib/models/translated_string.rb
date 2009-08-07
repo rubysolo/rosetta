@@ -2,11 +2,11 @@ class TranslatedString < ActiveRecord::Base
   set_table_name "i18n_translated_strings"
   has_many :translations, :foreign_key => "i18n_translated_string_id"
 
-  before_validation_on_create :set_defaults
+  before_validation :set_defaults
   validates_presence_of :key
 
-  def namespaced_key
-    [namespace, key].reject{|x| x.blank? }.join('.')
+  def key
+    [self[:namespace], self[:key]].reject{|x| x.blank? }.join('.')
   end
 
   def self.translations_for_locale(locale, options={})
@@ -37,7 +37,7 @@ class TranslatedString < ActiveRecord::Base
   private
 
   def set_defaults
-    self.namespace = (namespace || "").split(/\./) + (key || "").split(/\./)
+    self.namespace = (self[:namespace] || "").split(/\./) + (self[:key] || "").split(/\./)
     self.key       = namespace.pop
     self.namespace = namespace.compact.join('.')
   end

@@ -6,7 +6,7 @@ class Translation < ActiveRecord::Base
   delegate :key, :namespace, :namespaced_key, :to => :translated_string
 
   named_scope :for_locale, lambda{|locale|
-    locale = Locale.find_by_code!(locale) unless locale.is_a?(Locale)
+    locale = Locale.find_by_code!(locale.to_s) unless locale.is_a?(Locale)
     { :conditions => { :i18n_locale_id => locale.id }}
   }
 

@@ -3,9 +3,11 @@
 @italian = Locale.create(:name => 'Italian', :code => 'it', :iso => 'it-IT')
 
 @greeting = TranslatedString.create(:key => 'greeting')
-@namespace = TranslatedString.create(:key => 'test', :namespace => 'db.namespace')
+@ns_test  = TranslatedString.create(:key => 'test', :namespace => 'db.namespace')
+@ns_hello = TranslatedString.create(:key => 'db.namespace.hello')
 
-@english_greeting = @english.translations.create(:translated_string => @greeting, :text => 'Greetings from the database!')
- @german_greeting =  @german.translations.create(:translated_string => @greeting, :text => 'Grüße aus der Datenbank!')
+@english.translations.create(:translated_string => @greeting, :text => 'Greetings from the database!')
+@german.translations.create(:translated_string => @greeting, :text => 'Grüße aus der Datenbank!')
 
-@namespaced_translation = @english.translations.create(:translated_string => @namespace, :text => 'Namespaced Lookup')
+@english.translations.create(:translated_string => @ns_test, :text => 'Namespaced Lookup')
+@english.translations.create(:translated_string => @ns_hello, :text => 'Hello!')

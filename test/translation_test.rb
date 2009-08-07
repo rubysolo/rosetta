@@ -21,5 +21,9 @@ class TranslationTest < ActiveSupport::TestCase
     assert_equal 'Namespaced Lookup', I18n.translate("db.namespace.test")
     assert_equal 'Namespaced Lookup', I18n.translate("test", :scope => "db.namespace")
     assert_equal 'Namespaced Lookup', I18n.translate("test", :scope => [:db, :namespace])
+
+    assert_equal 'Hello!', I18n.translate("db.namespace.hello")
+    assert_equal 'Hello!', I18n.translate("hello", :scope => "db.namespace")
+    assert_equal 'Hello!', I18n.translate("hello", :scope => [:db, :namespace])
   end
 end
