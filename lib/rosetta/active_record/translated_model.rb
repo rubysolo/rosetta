@@ -10,7 +10,7 @@ module Rosetta
 
         base.instance_eval do
           has_many :translations, :class_name => self.translations_class
-          before_save :save_translation
+          after_save :save_translation
 
           translated_attributes.values.flatten.each do |attribute_name|
             define_method :"#{attribute_name}" do
@@ -95,8 +95,9 @@ module Rosetta
 
       def save_translation
         returning true do
-          if @current_translation
-            @current_translation.save if @current_translation.changed?
+          if @current_translation.try(:changed?)
+            @current_translation.item_id = self.id
+            @current_translation.save
           end
         end
       end

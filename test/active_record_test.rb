@@ -38,6 +38,10 @@ class ActiveRecordTest < ActiveSupport::TestCase
       @post = Post.create(:title => "Hello", :body => "This is a post")
       assert_equal 1, PostTranslation.count
 
+      @translation = PostTranslation.first
+      assert_equal @post.id, @translation.item_id
+      assert_equal @post.id, @translation.post_id
+
       I18n.locale = :de
 
       @post.title = "Hallo"
