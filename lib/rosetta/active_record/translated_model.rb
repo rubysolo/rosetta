@@ -34,6 +34,23 @@ module Rosetta
             }
           end
         end
+
+        base.translations_class.constantize.instance_eval do
+          define_method :item_id do
+            self[:"#{base.class_name.underscore}_id"]
+          end
+
+          define_method :item_id= do |value|
+            self[:"#{base.class_name.underscore}_id"] = value
+          end
+
+          define_method :base_translation do
+            self.class.find :first, :conditions => {
+              :"#{base.class_name.underscore}_id" => self[:"#{base.class_name.underscore}_id"],
+              :i18n_locale_id => Locale.main.id
+            }
+          end
+        end
       end
 
       module ClassMethods
