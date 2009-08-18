@@ -17,7 +17,7 @@ class <%= migration_class_name %> < ActiveRecord::Migration
     <%- unless migrate_data_for_columns.empty? -%>
 
     @locale = Locale.main
-    execute("INSERT INTO <%= translated_model.translations_table %> (i18n_locale_id, <%= migrate_data_column_strings %>) SELECT #{@locale.id}, <%= migrate_data_column_strings %> FROM <%= plural_name %>")
+    execute("INSERT INTO <%= translated_model.translations_table %> (i18n_locale_id, <%= singular_name %>_id, <%= migrate_data_column_strings %>) SELECT #{@locale.id}, id, <%= migrate_data_column_strings %> FROM <%= plural_name %>")
 
     change_table :<%= plural_name %> do |t|
       t.remove <%= migrate_data_column_symbols %>
