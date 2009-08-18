@@ -29,6 +29,7 @@ class TranslatedString < ActiveRecord::Base
                LEFT JOIN i18n_translations b ON b.i18n_translated_string_id = s.id
                          AND b.i18n_locale_id = ?
          WHERE #{filter_sql}
+         ORDER BY namespace, key
       }, locale.id, Locale.main.id],
       :page => options[:page], :per_page => options[:per_page]
     )
