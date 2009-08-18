@@ -15,14 +15,18 @@ module Rosetta
 
           self.translated_attributes = {}
 
-          attributes.each { |a| translates_attribute(a) }
+          attributes.each do |a|
+            if a.is_a?(Hash)
+              a.each{|name,type| translates_attribute(name, type) }
+            else
+              translates_attribute(a, :string)
+            end
+          end
 
           self.send(:include, TranslatedModel)
         end
 
-        def translates_attribute(attribute_or_hash)
-          attribute, type = attribute_or_hash.is_a?(Symbol) ? [attribute_or_hash, :string] : attribute_or_hash.to_a.first
-
+        def translates_attribute(attribute, type)
           self.translated_attributes[type] ||= []
           self.translated_attributes[type] << attribute
         end
