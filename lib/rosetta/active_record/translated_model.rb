@@ -88,7 +88,7 @@ module Rosetta
       end
 
       def current_translation_stale?
-        @current_translation && @current_translation.locale.code.to_sym != I18n.locale
+        @current_translation && @current_translation.locale.code.to_sym != I18n.locale.to_sym
       end
 
       private
