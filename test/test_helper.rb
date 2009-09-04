@@ -14,7 +14,7 @@ locale_path = "#{PLUGIN_ROOT}/test/fixtures/locales"
 Dir["#{locale_path}/*.yml"].each { |locale| I18n.load_path << locale }
 I18n.reload!
 
-ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :dbfile => ":memory:")
+ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database => ":memory:")
 ActiveRecord::Base.logger = Logger.new("/dev/null")
 
 class ActiveSupport::TestCase
@@ -22,7 +22,7 @@ class ActiveSupport::TestCase
     ::ActiveRecord::Migration.verbose = false   # Quiet down the migration engine
     ::ActiveRecord::Base.establish_connection({
       :adapter => 'sqlite3',
-      :dbfile => ':memory:'
+      :database => ':memory:'
     })
     ::ActiveRecord::Base.silence do
       load schema_file
