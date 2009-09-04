@@ -5,7 +5,7 @@ module Rosetta
       def self.included(base)
         base.send :extend, ClassMethods
 
-        Rosetta::ActiveRecord.translated_models << base.class_name
+        Rosetta::ActiveRecord.translated_models << base.class_name unless Rosetta::ActiveRecord.translated_models.include?(base.class_name)
         base.translations_class = "#{base.class_name}Translation"
 
         base.instance_eval do
