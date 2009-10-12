@@ -51,4 +51,21 @@ class ActiveRecordTest < ActiveSupport::TestCase
       assert_equal 2, PostTranslation.count
     }
   end
+
+  test "default locale fallback" do
+    Post.create_translations_table!
+
+    I18n.locale = :en
+
+    @post = Post.create(:title => "Hello", :body => "This is a post")
+
+    I18n.locale = :de
+
+    @post.title = "Hallo"
+    @post.save
+
+    @post.reload
+
+    assert_equal "This is a post", @post.body
+  end
 end

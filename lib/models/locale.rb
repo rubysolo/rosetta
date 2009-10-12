@@ -8,6 +8,10 @@ class Locale < ActiveRecord::Base
     find_by_code(I18n.locale.to_s)
   end
 
+  def main?
+    main
+  end
+
   def self.main
     find_by_main(true)
   end

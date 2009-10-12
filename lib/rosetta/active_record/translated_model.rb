@@ -14,7 +14,9 @@ module Rosetta
 
           translated_attributes.values.flatten.each do |attribute_name|
             define_method :"#{attribute_name}" do
-              current_translation.send :"#{attribute_name}"
+              t = current_translation.send :"#{attribute_name}"
+              t = current_translation.base_translation.send :"#{attribute_name}" if t.blank? unless Locale.current.main?
+              t
             end
 
             define_method :"#{attribute_name}=" do |value|
