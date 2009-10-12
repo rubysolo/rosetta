@@ -4,6 +4,11 @@
   migrate_data_column_strings = migrate_data_column_list.map{|c| "#{c}"  }.join(', ')
 -%>
 class <%= migration_class_name %> < ActiveRecord::Migration
+  <%- unless migrate_data_for_columns.empty? -%>
+  class <%= translated_model.translations_class %> < ActiveRecord::Base
+  end
+  <%- end -%>
+
   def self.up
     create_table :<%= translated_model.translations_table %>, :force => true do |t|
       t.references :i18n_locale, :<%= singular_name %>
@@ -27,9 +32,6 @@ class <%= migration_class_name %> < ActiveRecord::Migration
 
   def self.down
     <%- unless migrate_data_for_columns.empty? -%>
-    class <%= translated_model.translations_class %> < ActiveRecord::Base
-    end
-
     change_table :<%= plural_name %> do |t|
     <%- migrate_data_for_columns.each do |type, columns| -%>
       t.<%= type %> <%= columns.map{|a| ":#{a}" }.join(', ') %>
