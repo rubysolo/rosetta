@@ -5,6 +5,14 @@ class TranslatedString < ActiveRecord::Base
   before_validation :set_defaults
   validates_presence_of :key
 
+  def self.[](key)
+    segments = key.split(/\./)
+    db_key = segments.pop
+    db_ns  = segments.compact.join('.')
+
+    find_by_namespace_and_key(db_ns, db_key)
+  end
+
   def key
     [self[:namespace], self[:key]].reject{|x| x.blank? }.join('.')
   end
